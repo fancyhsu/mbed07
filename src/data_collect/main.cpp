@@ -100,7 +100,6 @@ void record(void) {
    acc16 = (res[0] << 6) | (res[1] >> 2);
 
    if (acc16 > UINT14_MAX/2)
-
      acc16 -= UINT14_MAX;
 
    x = ((float)acc16) / 4096.0f;
@@ -108,7 +107,6 @@ void record(void) {
    acc16 = (res[2] << 6) | (res[3] >> 2);
 
    if (acc16 > UINT14_MAX/2)
-
      acc16 -= UINT14_MAX;
 
    y = ((float)acc16) / 4096.0f;
@@ -116,11 +114,8 @@ void record(void) {
    acc16 = (res[4] << 6) | (res[5] >> 2);
 
    if (acc16 > UINT14_MAX/2)
-
      acc16 -= UINT14_MAX;
-
    z = ((float)acc16) / 4096.0f;
-
    printf("%f, %f, %f\n", x * 1000.0, y * 1000.0, z * 1000.0);
 
 }
@@ -129,53 +124,33 @@ void record(void) {
 void startRecord(void) {
 
   printf("---start---\n");
-
   idR[indexR++] = queue.call_every(1,record);
-
   indexR = indexR % 32;
 
 }
 
 
 void stopRecord(void) {
-
   printf("---stop---\n");
-
   for (auto &i : idR)
-
     queue.cancel(i);
-
 }
-
-
 void flagWrong(void) {printf("---delete---\n");}
-
-
 void initFXOS8700Q(void) {
-
   uint8_t data[2];
-
   FXOS8700CQ_readRegs( FXOS8700Q_CTRL_REG1, &data[1], 1);
-
   data[1] |= 0x01;
-
   data[0] = FXOS8700Q_CTRL_REG1;
-
   FXOS8700CQ_writeRegs(data, 2);
-
 }
 
 
 int main() {
 
   initFXOS8700Q();
-
   t.start(callback(&queue, &EventQueue::dispatch_forever));
-
   btnRecord.fall(queue.event(startRecord));
-
   btnFlag.fall(queue.event(flagWrong));
-
   btnRecord.rise(queue.event(stopRecord));
 
 }
